@@ -1,0 +1,6 @@
+@CloudShelf_Blob_Storage__HostAddress = http://localhost:5281
+
+GET {{CloudShelf_Blob_Storage__HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
