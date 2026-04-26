@@ -59,6 +59,9 @@ namespace CloudShelf_Blob_Storage_.Services.Implementation
 
             //build the full sas url
             var sasToken = sasBuilder.ToSasQueryParameters(credential).ToString();
+            var blobUrl = $"https://{_accountName}.blob.core.windows.net/{_containerName}/{filename}?{sasToken}";
+
+            return blobUrl;
         }
     }
 }

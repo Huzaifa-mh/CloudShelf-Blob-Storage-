@@ -1,7 +1,13 @@
 using CloudShelf_Blob_Storage_.Data;
+using CloudShelf_Blob_Storage_.Services.Implementation;
+using CloudShelf_Blob_Storage_.Services.Interface;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
+
+//tell app to use BlobService when IBlobService is requested
+//it is dependency injection, and i am using it 2nd type which is scoped
+builder.Services.AddScoped<IBlobService, BlobService>();
 
 // Add services to the container.
 
