@@ -1,6 +1,6 @@
 ﻿namespace CloudShelf_Blob_Storage_.Models
 {
-    public class image
+    public class Image
     {
         public int Id { get; set; }
         public string FileName { get; set; }
