@@ -1,4 +1,6 @@
-﻿using Azure.Storage.Blobs;
+﻿using Azure.Storage;
+using Azure.Storage.Blobs;
+using Azure.Storage.Sas;
 using CloudShelf_Blob_Storage_.Services.Interface;
 
 namespace CloudShelf_Blob_Storage_.Services.Implementation
@@ -26,6 +28,37 @@ namespace CloudShelf_Blob_Storage_.Services.Implementation
             //get your container
             var containerClient = blobServiceClient.GetBlobContainerClient(_containerName);
 
+            //get a reference to the blob (file)
+            var blobClient = containerClient.GetBlobClient(fileName);
+
+            //upload the image
+
+            await blobClient.UploadAsync(imageStream, new Azure.Storage.Blobs.Models.BlobHttpHeaders { ContentType = contentType });
+
+            return fileName;
+        }
+
+        public string GenerateSasUrl(string filename)
+        {
+
+            //create credentials using account name and key
+            var credential = new StorageSharedKeyCredential(_accountName, _accountKey);
+
+            //build the sas token
+            var sasBuilder = new BlobSasBuilder
+            {
+                BlobContainerName = _containerName,
+                BlobName = filename,
+                Resource = "b",
+                ExpiresOn = DateTimeOffset.UtcNow.AddHours(1)
+            };
+
+
+            //set permissions to read only
+            sasBuilder.SetPermissions(BlobSasPermissions.Read);
+
+            //build the full sas url
+            var sasToken = sasBuilder.ToSasQueryParameters(credential).ToString();
         }
     }
 }
