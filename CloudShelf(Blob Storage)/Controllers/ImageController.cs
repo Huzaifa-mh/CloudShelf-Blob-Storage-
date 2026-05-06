@@ -1,6 +1,7 @@
 ﻿using CloudShelf_Blob_Storage_.Data;
 using CloudShelf_Blob_Storage_.DTO;
 using CloudShelf_Blob_Storage_.Services.Interface;
+using CloudShelf_Blob_Storage_.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -34,9 +35,57 @@ namespace CloudShelf_Blob_Storage_.Controllers
 
             var contentType = response.Content.Headers.ContentType?.MediaType ?? "image/jpeg";
 
-            var extension  = path
+            var extension = Path.GetExtension(new Uri(request.ImageUrl).AbsolutePath);
 
+            if (string.IsNullOrEmpty(extension))
+            {
+                extension = ".jpg";
+            }
 
+            var fileName = $"{Guid.NewGuid()}{extension}";
+
+            await _blobService.UploadBlobAsync(imageStream, fileName, contentType);
+
+            var image = new Image
+            {
+                FileName = fileName,
+                OriginalUrl = request.ImageUrl,
+                ContentType = contentType,
+                UploadedAt = DateTime.UtcNow
+            };
+
+            _context.Images.Add(image);
+            await _context.SaveChangesAsync();
+
+            var sasUrl = _blobService.GenerateSasUrl(image.FileName);
+
+            return Ok(new ImageResponse
+            {
+                Id = image.Id,
+                SasUrl = sasUrl,
+                OriginalUrl = image.OriginalUrl,
+                UploadedAt = image.UploadedAt
+            });
+        }
+
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetImage(int id)
+        {
+            var image = await _context.Images.FindAsync(id);
+            if (image == null)
+            {
+                return NotFound();
+            }
+            
+            var sasUrl = _blobService.GenerateSasUrl(image.FileName);
+
+            return Ok(new ImageResponse
+            {
+                Id = image.Id,
+                SasUrl = sasUrl,
+                OriginalUrl = image.OriginalUrl,
+                UploadedAt = image.UploadedAt
+            });
         }
     }
 }
