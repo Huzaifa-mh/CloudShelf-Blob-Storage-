@@ -14,7 +14,7 @@ namespace CloudShelf_Blob_Storage_.Services.Implementation
 
         public  BlobService(IConfiguration configuration)
         {
-            _connectionString = configuration.GetConnectionString("AzureStorage:ConnectionString");
+            _connectionString = configuration["AzureStorage:ConnectionString"];
             _containerName = configuration["AzureStorage:ContainerName"];
             _accountName = configuration["AzureStorage:AccountName"];
             _accountKey = configuration["AzureStorage:AccountKey"];
