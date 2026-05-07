@@ -22,20 +22,7 @@ namespace CloudShelf_Blob_Storage_.Services.Implementation
 
         public async Task<string> UploadBlobAsync(Stream imageStream, string fileName, string contentType)
         {
-            //connect to azure
-            var blobServiceClient = new BlobServiceClient(_connectionString);
-
-            //get your container
-            var containerClient = blobServiceClient.GetBlobContainerClient(_containerName);
-
-            //get a reference to the blob (file)
-            var blobClient = containerClient.GetBlobClient(fileName);
-
-            //upload the image
-
-            await blobClient.UploadAsync(imageStream, new Azure.Storage.Blobs.Models.BlobHttpHeaders { ContentType = contentType });
-
-            return fileName;
+            
         }
 
         public string GenerateSasUrl(string filename)
