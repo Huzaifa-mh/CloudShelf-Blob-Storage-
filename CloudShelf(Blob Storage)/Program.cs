@@ -17,6 +17,7 @@ builder.Services.AddOpenApi();
 builder.Services.AddHttpClient();
 
 //Setting up the Db Context for the application
+//with the help of Dependency injection
 builder.Services.AddDbContext<AppDBContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 var app = builder.Build();
