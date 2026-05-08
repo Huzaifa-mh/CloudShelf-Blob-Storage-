@@ -23,6 +23,11 @@ namespace CloudShelf_Blob_Storage_.Controllers
                 return BadRequest("ImageUrl is required!");
             }
 
+            //this is also the use of http Client but in this we might have to face the socket exhaustion issue.
+            //var client = new HttpClient();
+
+
+            //but in this we are using the http client factory which will manage the lifecycle of the http client and will also handle the socket exhaustion issue.
             var httpClient = _httpClientFactory.CreateClient();
             var response = await httpClient.GetAsync(request.ImageUrl);
 
